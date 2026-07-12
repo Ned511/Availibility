@@ -1,0 +1,212 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+.av-root, .av-root * { box-sizing: border-box; }
+
+.av-root {
+  --bg: #0f1115;
+  --surface: #171a21;
+  --surface-2: #1e222b;
+  --surface-3: #262b36;
+  --border: #2a2f3a;
+  --text: #e8eaed;
+  --text-dim: #8b93a5;
+  --text-faint: #565d6d;
+  --accent: #4da3ff;
+  --accent-dim: #2c5f94;
+  --available: #3ecf8e;
+  --available-dim: #1d4a37;
+  --sold: #ff6b6b;
+  --sold-dim: #522427;
+  --ps5: #7c9bff; --ps5-dim: #26305c;
+  --ps4: #c98bff; --ps4-dim: #3a2a58;
+  --sec: #f2b84b; --sec-dim: #4a3a1c;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, sans-serif;
+  min-height: 100vh;
+  padding: 26px 20px 60px;
+  border-radius: 12px;
+}
+
+.av-wrap { max-width: 900px; margin: 0 auto; }
+.av-header { margin-bottom: 18px; }
+.av-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; display: flex; align-items: center; gap: 10px; }
+.av-title .dot3 { display: inline-flex; gap: 3px; }
+.av-title .dot3 span { width: 7px; height: 7px; border-radius: 2px; display: inline-block; }
+.av-title .dot3 span:nth-child(1) { background: var(--ps5); }
+.av-title .dot3 span:nth-child(2) { background: var(--ps4); }
+.av-title .dot3 span:nth-child(3) { background: var(--sec); }
+.av-sub { color: var(--text-dim); font-size: 13px; margin-top: 4px; }
+
+.av-toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+.av-search { flex: 1; min-width: 200px; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 10px 13px; border-radius: 8px; font-size: 14px; font-family: inherit; }
+.av-search:focus { outline: none; border-color: var(--accent-dim); }
+.av-search::placeholder { color: var(--text-faint); }
+
+.btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; }
+.btn:hover { border-color: var(--accent-dim); background: var(--surface-3); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #08101c; font-weight: 600; }
+
+.status-line { font-size: 12px; color: var(--text-faint); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.refresh-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--available); display: inline-block; }
+
+.listing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.listing-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 15px; }
+.listing-games { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14.5px; margin-bottom: 12px; line-height: 1.4; }
+
+.av-slot { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--border); }
+.av-slot:first-of-type { border-top: none; }
+.av-slot-label { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.tag { padding: 2px 8px; border-radius: 5px; font-size: 10.5px; font-weight: 600; }
+.tag.ps5 { background: var(--ps5-dim); color: var(--ps5); }
+.tag.ps4 { background: var(--ps4-dim); color: var(--ps4); }
+.tag.sec { background: var(--sec-dim); color: var(--sec); }
+.av-status { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+.av-status.avail { background: var(--available-dim); color: var(--available); }
+.av-status.sold { background: var(--sold-dim); color: var(--sold); }
+
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); border: 1px dashed var(--border); border-radius: 12px; }
+.empty-state .big { font-family: 'Space Grotesk', sans-serif; font-size: 17px; color: var(--text); margin-bottom: 6px; }
+
+.connect-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 420px; margin: 40px auto; text-align: center; }
+.connect-box input { width: 100%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 7px; font-size: 13px; margin: 12px 0; font-family: inherit; }
+.connect-box p { color: var(--text-dim); font-size: 12.5px; }
+</style>
+
+<div class="av-root">
+  <div class="av-wrap">
+    <div class="av-header">
+      <div class="av-title"><span class="dot3"><span></span><span></span><span></span></span> Game Availability</div>
+      <div class="av-sub">Live stock — tap refresh any time for the latest</div>
+    </div>
+
+    <div id="connectWrap"></div>
+
+    <div id="mainWrap" style="display:none;">
+      <div class="av-toolbar">
+        <input class="av-search" id="avSearch" placeholder="Search for a game...">
+        <button class="btn btn-primary" id="refreshBtn">↻ Refresh</button>
+      </div>
+      <div class="status-line" id="statusLine"><span class="refresh-dot"></span><span id="statusText">Loading...</span></div>
+      <div id="listRoot"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const LS_URL_KEY = 'gv_reseller_script_url';
+  const DEFAULT_RESELLER_URL = 'https://script.google.com/macros/s/AKfycbyw-81G7AI9Pm2OTqqb92f770-1b89xnJjOLIwlRm2q_Ng4meXNDBI3Kq81MYlMN0IVrg/exec';
+
+  let listings = [];
+  let searchTerm = '';
+
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+
+  function getUrl(){
+    try { const s = localStorage.getItem(LS_URL_KEY); if (s) return s; } catch(e){}
+    return DEFAULT_RESELLER_URL;
+  }
+  function setUrl(u){ try { localStorage.setItem(LS_URL_KEY, u); } catch(e){} }
+
+  function escapeHtml(str){ return (str||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function renderConnectBox(){
+    $('#connectWrap').innerHTML = `
+      <div class="connect-box">
+        <div style="font-weight:600; margin-bottom:4px;">Connect to availability feed</div>
+        <p>Paste the link your supplier gave you. This only shows stock — no account details are ever sent to this page.</p>
+        <input id="urlInput" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(getUrl())}">
+        <button class="btn btn-primary" id="connectBtn" style="width:100%;">Connect</button>
+      </div>`;
+    $('#connectBtn').addEventListener('click', () => {
+      const u = $('#urlInput').value.trim();
+      if (!u) return;
+      setUrl(u);
+      init();
+    });
+  }
+
+  async function fetchListings(){
+    const url = getUrl();
+    if (!url) return null;
+    const res = await fetch(url + '?t=' + Date.now(), { method: 'GET', cache: 'no-store' });
+    const text = await res.text();
+    return text ? JSON.parse(text) : [];
+  }
+
+  function matches(listing){
+    if (!searchTerm) return true;
+    return (listing.games || '').toLowerCase().includes(searchTerm.toLowerCase());
+  }
+
+  function render(){
+    const root = $('#listRoot');
+    const filtered = listings.filter(matches);
+    if (listings.length === 0){
+      root.innerHTML = `<div class="empty-state"><div class="big">Nothing listed yet</div><div>Check back shortly, or ask your supplier.</div></div>`;
+      return;
+    }
+    if (filtered.length === 0){
+      root.innerHTML = `<div class="empty-state"><div class="big">No matches</div><div>Try a different game name.</div></div>`;
+      return;
+    }
+    root.innerHTML = `<div class="listing-grid">${filtered.map(renderCard).join('')}</div>`;
+  }
+
+  function renderCard(listing){
+    return `<div class="listing-card">
+      <div class="listing-games">${escapeHtml(listing.games || 'Untitled listing')}</div>
+      ${(listing.slots || []).map(s => `
+        <div class="av-slot">
+          <div class="av-slot-label"><span class="tag ${tagClass(s.type)}">${escapeHtml(s.label)}</span><span style="color:var(--text-faint); font-size:11px;">${escapeHtml(s.console || '')}</span></div>
+          ${s.status === 'available'
+            ? `<span class="av-status avail">Available${s.price ? ' · ' + escapeHtml(s.price) : ''}</span>`
+            : `<span class="av-status sold">Sold</span>`}
+        </div>`).join('')}
+    </div>`;
+  }
+
+  function tagClass(type){
+    if (type === 'ps5_primary') return 'ps5';
+    if (type === 'ps4_primary') return 'ps4';
+    return 'sec';
+  }
+
+  $('#avSearch') && $('#avSearch').addEventListener('input', (e) => { searchTerm = e.target.value; render(); });
+  $('#refreshBtn') && $('#refreshBtn').addEventListener('click', () => load(true));
+
+  async function load(manual){
+    $('#statusText').textContent = 'Refreshing...';
+    try {
+      const data = await fetchListings();
+      listings = Array.isArray(data) ? data : [];
+      $('#statusText').textContent = 'Updated ' + new Date().toLocaleTimeString();
+      render();
+    } catch(e){
+      $('#statusText').textContent = 'Could not refresh — check your connection';
+    }
+  }
+
+  let pollTimer = null;
+  function init(){
+    if (!getUrl()){
+      $('#connectWrap').style.display = 'block';
+      $('#mainWrap').style.display = 'none';
+      renderConnectBox();
+      return;
+    }
+    $('#connectWrap').style.display = 'none';
+    $('#mainWrap').style.display = 'block';
+    load();
+    clearInterval(pollTimer);
+    pollTimer = setInterval(load, 45000);
+  }
+
+  renderConnectBox();
+  init();
+})();
+</script>
