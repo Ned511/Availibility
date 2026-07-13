@@ -212,8 +212,6 @@
 
   function renderCard(game){
     const anyAvailable = SLOT_ORDER.some(t => game.slots[t].avail > 0);
-    const prices = SLOT_ORDER.map(t => game.slots[t].minPrice).filter(p => p !== null);
-    const from = prices.length ? Math.min(...prices) : null;
     const initials = initialsFor(game.name);
     const color = colorFor(game.name);
 
@@ -226,11 +224,11 @@
       </div>
       <div class="card-body">
         <div class="card-title">${escapeHtml(game.name)}</div>
-        <div class="card-price">${from !== null ? `<span class="from">From</span>${from}` : '<span style="color:var(--text-faint); font-weight:500; font-size:12px;">Currently unavailable</span>'}</div>
         <div class="slot-mini-row">
           ${SLOT_ORDER.filter(t => game.slots[t].total > 0).map(t => {
             const b = game.slots[t];
-            return `<span class="slot-mini ${b.avail > 0 ? 'avail' : 'sold'}">${escapeHtml(shortLabel(b.label))}${b.avail > 0 ? ' ×' + b.avail : ''}</span>`;
+            const priceText = b.avail > 0 && b.minPrice !== null ? ' · ' + b.minPrice : '';
+            return `<span class="slot-mini ${b.avail > 0 ? 'avail' : 'sold'}">${escapeHtml(shortLabel(b.label))}${b.avail > 0 ? ' ×' + b.avail : ''}${priceText}</span>`;
           }).join('')}
         </div>
       </div>
