@@ -1,0 +1,491 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+.av-root, .av-root * { box-sizing: border-box; }
+
+.av-root {
+  --bg: #0f1115;
+  --surface: #171a21;
+  --surface-2: #1e222b;
+  --surface-3: #262b36;
+  --border: #2a2f3a;
+  --text: #e8eaed;
+  --text-dim: #8b93a5;
+  --text-faint: #565d6d;
+  --accent: #ff8a3d;
+  --accent-2: #ec1a68;
+  --accent-dim: #7a3a2e;
+  --accent-grad: linear-gradient(90deg, #ff8a3d, #ec1a68);
+  --available: #3ecf8e;
+  --available-dim: #1d4a37;
+  --sold: #ff6b6b;
+  --sold-dim: #522427;
+  --pending: #f2b84b;
+  --pending-dim: #4a3a1c;
+  --ps5: #7c9bff; --ps5-dim: #26305c;
+  --ps4: #c98bff; --ps4-dim: #3a2a58;
+  --sec: #f2b84b; --sec-dim: #4a3a1c;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, sans-serif;
+  min-height: 100vh;
+  padding: 22px 16px 50px;
+  border-radius: 12px;
+}
+
+.av-wrap { max-width: 1080px; margin: 0 auto; }
+.av-header { text-align: center; margin-bottom: 14px; }
+.av-title { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 22px; }
+.av-sub { color: var(--text-dim); font-size: 12.5px; margin-top: 4px; }
+
+.authbar { display: flex; gap: 8px; align-items: center; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; font-size: 12.5px; }
+.pill { background: var(--surface); border: 1px solid var(--border); padding: 7px 13px; border-radius: 20px; }
+.pill.balance { color: var(--available); font-weight: 700; }
+.btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn:hover { border-color: var(--accent-dim); }
+.btn-ghost { background: transparent; color: var(--text-dim); }
+
+.av-toolbar { display: flex; gap: 8px; margin-bottom: 14px; max-width: 520px; margin-left: auto; margin-right: auto; }
+.av-search { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 11px 14px; border-radius: 10px; font-size: 14px; font-family: inherit; }
+.av-search:focus { outline: none; border-color: var(--accent-dim); }
+.av-search::placeholder { color: var(--text-faint); }
+.refresh-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); width: 42px; border-radius: 10px; cursor: pointer; font-size: 16px; }
+.refresh-btn:hover { color: var(--text); border-color: var(--accent-dim); }
+.refresh-btn.spinning { animation: spin 0.6s linear; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tabrow { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; }
+.tabchip { background: var(--surface); border: 1px solid var(--border); color: var(--text-dim); padding: 8px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.tabchip.active { background: var(--accent-grad); border-color: transparent; color: #fff; }
+
+.status-line { text-align: center; font-size: 11.5px; color: var(--text-faint); margin-bottom: 18px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; transition: border-color .15s, transform .15s; }
+.card:hover { border-color: var(--accent-dim); transform: translateY(-2px); }
+
+.card-img-wrap { width: 100%; aspect-ratio: 1 / 1; background: var(--surface-2); position: relative; overflow: hidden; }
+.card-img-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 30px; color: rgba(255,255,255,0.85); }
+
+.stock-badge { position: absolute; top: 8px; right: 8px; font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; letter-spacing: .02em; text-transform: uppercase; }
+.stock-badge.in { background: rgba(62,207,142,0.92); color: #06231a; }
+.stock-badge.out { background: rgba(255,107,107,0.92); color: #2a0d0d; }
+
+.card-body { padding: 11px 12px 13px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.card-title { font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 13.5px; line-height: 1.3; min-height: 35px; }
+
+.slot-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 3px; }
+.slot-mini { font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 6px; }
+.slot-mini.avail { background: var(--available-dim); color: var(--available); }
+.slot-mini.sold { background: var(--surface-3); color: var(--text-faint); text-decoration: line-through; }
+.buy-btn { background: var(--accent-grad); border: none; color: #fff; font-size: 10px; font-weight: 700; padding: 4px 9px; border-radius: 12px; cursor: pointer; font-family: inherit; }
+.buy-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.empty-state { text-align: center; padding: 70px 20px; color: var(--text-dim); border: 1px dashed var(--border); border-radius: 12px; }
+.empty-state .big { font-family: 'Rajdhani', sans-serif; font-size: 17px; color: var(--text); margin-bottom: 6px; }
+
+.connect-box, .auth-box { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px; max-width: 400px; margin: 40px auto; text-align: center; }
+.connect-box input, .auth-box input { width: 100%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 8px; font-size: 13px; margin: 8px 0; font-family: inherit; }
+.connect-box p, .auth-box p { color: var(--text-dim); font-size: 12.5px; }
+.btn-primary { background: var(--accent-grad); border: none; color: #fff; font-weight: 700; padding: 11px 14px; border-radius: 24px; font-size: 13px; cursor: pointer; width: 100%; font-family: inherit; box-shadow: 0 4px 18px rgba(236,26,104,0.35); margin-top: 6px; }
+.auth-switch { font-size: 12px; color: var(--accent); cursor: pointer; margin-top: 12px; }
+.auth-error { color: var(--sold); font-size: 12px; margin-top: 8px; min-height: 16px; }
+
+.order-list { display: flex; flex-direction: column; gap: 10px; max-width: 640px; margin: 0 auto; }
+.order-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; }
+.order-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.order-game { font-weight: 600; font-size: 14px; }
+.order-meta { color: var(--text-dim); font-size: 11.5px; margin-top: 2px; }
+.order-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .02em; }
+.order-badge.pending { background: var(--pending-dim); color: var(--pending); }
+.order-badge.fulfilled { background: var(--available-dim); color: var(--available); }
+.order-badge.cancelled { background: var(--sold-dim); color: var(--sold); }
+.cred-reveal { margin-top: 10px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.cred-reveal .row { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 12.5px; padding: 3px 0; }
+.cred-reveal .row .lbl { color: var(--text-faint); font-family: 'Inter', sans-serif; font-size: 10.5px; text-transform: uppercase; }
+.copy-mini { background: var(--surface-3); border: none; color: var(--text-dim); font-size: 10.5px; padding: 3px 8px; border-radius: 6px; cursor: pointer; }
+
+.toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--surface-3); border: 1px solid var(--accent-dim); color: var(--text); padding: 9px 16px; border-radius: 8px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 50; }
+.toast.show { opacity: 1; }
+</style>
+
+<div class="av-root">
+  <div class="av-wrap">
+    <div class="av-header">
+      <div class="logo-mark" style="display:inline-flex; align-items:center; justify-content:center; width:40px; height:40px; border-radius:11px; background:#0e0c11; border:1px solid var(--accent-2); box-shadow:0 0 14px rgba(236,26,104,0.35); margin-bottom:8px;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L21 9L12 22L3 9L12 2Z" stroke="url(#gvGrad2)" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M3 9H21M9 9L12 22M15 9L12 22M12 2L8.5 9M12 2L15.5 9" stroke="url(#gvGrad2)" stroke-width="0.8" opacity="0.6"/>
+          <defs><linearGradient id="gvGrad2" x1="3" y1="2" x2="21" y2="22"><stop stop-color="#ff8a3d"/><stop offset="1" stop-color="#ec1a68"/></linearGradient></defs>
+        </svg>
+      </div>
+      <div class="av-title" style="font-family:'Orbitron', sans-serif;">GAME VAULT</div>
+      <div class="av-sub">Live stock — buy directly with your balance</div>
+    </div>
+
+    <div id="connectWrap"></div>
+
+    <div id="mainWrap" style="display:none;">
+      <div class="authbar" id="authBar"></div>
+      <div class="tabrow" id="tabRow" style="display:none;">
+        <div class="tabchip active" data-tab="browse">Browse</div>
+        <div class="tabchip" data-tab="orders">My Orders</div>
+      </div>
+
+      <div id="authPanelWrap"></div>
+
+      <div id="browseView">
+        <div class="av-toolbar">
+          <input class="av-search" id="avSearch" placeholder="Search a game...">
+          <button class="refresh-btn" id="refreshBtn" title="Refresh">↻</button>
+        </div>
+        <div class="status-line" id="statusText">Loading...</div>
+        <div id="listRoot"></div>
+      </div>
+
+      <div id="ordersView" style="display:none;">
+        <div id="ordersRoot"></div>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+(function(){
+  const LS_URL_KEY = 'gv_reseller_script_url';
+  const LS_SESSION_KEY = 'gv_reseller_session';
+  const DEFAULT_RESELLER_URL = 'https://script.google.com/macros/s/AKfycbyw-81G7AI9Pm2OTqqb92f770-1b89xnJjOLIwlRm2q_Ng4meXNDBI3Kq81MYlMN0IVrg/exec';
+
+  const FALLBACK_COLORS = ['#4da3ff', '#7c9bff', '#c98bff', '#f2b84b', '#3ecf8e', '#ff6b6b'];
+  const SLOT_ORDER = ['ps5_primary', 'ps4_primary', 'secondary'];
+
+  let listings = [];
+  let searchTerm = '';
+  let session = null; // { resellerId, token, name, balance }
+  let activeTab = 'browse';
+  let showingAuth = 'login'; // 'login' | 'signup' | null
+
+  const $ = (sel) => document.querySelector(sel);
+
+  function getUrl(){
+    try { const s = localStorage.getItem(LS_URL_KEY); if (s) return s; } catch(e){}
+    return DEFAULT_RESELLER_URL;
+  }
+  function setUrl(u){ try { localStorage.setItem(LS_URL_KEY, u); } catch(e){} }
+  function saveSession(s){ session = s; try { localStorage.setItem(LS_SESSION_KEY, JSON.stringify(s)); } catch(e){} }
+  function clearSession(){ session = null; try { localStorage.removeItem(LS_SESSION_KEY); } catch(e){} }
+  function loadSession(){ try { const s = localStorage.getItem(LS_SESSION_KEY); return s ? JSON.parse(s) : null; } catch(e){ return null; } }
+
+  function escapeHtml(str){ return (str||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function showToast(msg){
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast._h);
+    showToast._h = setTimeout(()=> t.classList.remove('show'), 2200);
+  }
+
+  /* ---------------- API ---------------- */
+  async function apiGet(action, params){
+    params = params || {};
+    const qs = Object.keys(params).map(k => k + '=' + encodeURIComponent(params[k])).join('&');
+    const res = await fetch(getUrl() + '?action=' + action + (qs ? '&' + qs : '') + '&t=' + Date.now(), { method: 'GET', cache: 'no-store' });
+    return JSON.parse(await res.text());
+  }
+  async function apiPost(action, body){
+    const res = await fetch(getUrl(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action }, body))
+    });
+    return JSON.parse(await res.text());
+  }
+
+  /* ---------------- CONNECT ---------------- */
+  function renderConnectBox(){
+    $('#connectWrap').innerHTML = `
+      <div class="connect-box">
+        <div style="font-weight:700; margin-bottom:4px;">Connect to store</div>
+        <p>Paste the link your supplier gave you.</p>
+        <input id="urlInput" placeholder="https://script.google.com/macros/s/.../exec" value="${escapeHtml(getUrl())}">
+        <button class="btn-primary" id="connectBtn">Connect</button>
+      </div>`;
+    $('#connectBtn').addEventListener('click', () => {
+      const u = $('#urlInput').value.trim();
+      if (!u) return;
+      setUrl(u);
+      boot();
+    });
+  }
+
+  /* ---------------- AUTH UI ---------------- */
+  function renderAuthBar(){
+    const bar = $('#authBar');
+    if (session){
+      bar.innerHTML = `
+        <span class="pill">👋 ${escapeHtml(session.name)}</span>
+        <span class="pill balance">Balance: ${session.balance}</span>
+        <button class="btn btn-ghost" id="logoutBtn">Log out</button>`;
+      $('#logoutBtn').addEventListener('click', () => {
+        clearSession();
+        activeTab = 'browse';
+        renderAll();
+      });
+    } else {
+      bar.innerHTML = `<button class="btn-primary" id="openAuthBtn" style="width:auto; margin:0;">Log in / Sign up</button>`;
+      $('#openAuthBtn').addEventListener('click', () => { showingAuth = 'login'; renderAuthPanel(); });
+    }
+  }
+
+  function renderAuthPanel(){
+    const wrap = $('#authPanelWrap');
+    if (!showingAuth || session){ wrap.innerHTML = ''; return; }
+    if (showingAuth === 'login'){
+      wrap.innerHTML = `
+        <div class="auth-box">
+          <div style="font-weight:700; margin-bottom:10px;">Log in</div>
+          <input id="li_whatsapp" placeholder="WhatsApp number">
+          <input id="li_password" type="password" placeholder="Password">
+          <button class="btn-primary" id="liBtn">Log in</button>
+          <div class="auth-error" id="liErr"></div>
+          <div class="auth-switch" id="toSignup">New here? Create an account</div>
+        </div>`;
+      $('#liBtn').addEventListener('click', doLogin);
+      $('#toSignup').addEventListener('click', () => { showingAuth = 'signup'; renderAuthPanel(); });
+    } else {
+      wrap.innerHTML = `
+        <div class="auth-box">
+          <div style="font-weight:700; margin-bottom:10px;">Create account</div>
+          <input id="su_name" placeholder="Your name">
+          <input id="su_whatsapp" placeholder="WhatsApp number">
+          <input id="su_password" type="password" placeholder="Choose a password">
+          <button class="btn-primary" id="suBtn">Sign up</button>
+          <div class="auth-error" id="suErr"></div>
+          <div class="auth-switch" id="toLogin">Already have an account? Log in</div>
+        </div>`;
+      $('#suBtn').addEventListener('click', doSignup);
+      $('#toLogin').addEventListener('click', () => { showingAuth = 'login'; renderAuthPanel(); });
+    }
+  }
+
+  async function doLogin(){
+    const whatsapp = $('#li_whatsapp').value.trim();
+    const password = $('#li_password').value;
+    if (!whatsapp || !password){ $('#liErr').textContent = 'Fill in both fields'; return; }
+    $('#liErr').textContent = '';
+    try {
+      const res = await apiPost('login', { whatsapp, password });
+      if (res.error){ $('#liErr').textContent = res.error; return; }
+      saveSession(res);
+      showingAuth = null;
+      renderAll();
+      loadMyOrders();
+    } catch(e){ $('#liErr').textContent = 'Could not connect'; }
+  }
+
+  async function doSignup(){
+    const name = $('#su_name').value.trim();
+    const whatsapp = $('#su_whatsapp').value.trim();
+    const password = $('#su_password').value;
+    if (!name || !whatsapp || !password){ $('#suErr').textContent = 'Fill in every field'; return; }
+    $('#suErr').textContent = '';
+    try {
+      const res = await apiPost('signup', { name, whatsapp, password });
+      if (res.error){ $('#suErr').textContent = res.error; return; }
+      saveSession(res);
+      showingAuth = null;
+      renderAll();
+      showToast('Account created — welcome!');
+    } catch(e){ $('#suErr').textContent = 'Could not connect'; }
+  }
+
+  /* ---------------- TABS ---------------- */
+  function wireTabs(){
+    $('#tabRow').style.display = session ? 'flex' : 'none';
+    document.querySelectorAll('.tabchip').forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.tab === activeTab);
+      chip.onclick = () => {
+        activeTab = chip.dataset.tab;
+        wireTabs();
+        $('#browseView').style.display = activeTab === 'browse' ? 'block' : 'none';
+        $('#ordersView').style.display = activeTab === 'orders' ? 'block' : 'none';
+        if (activeTab === 'orders') loadMyOrders();
+      };
+    });
+  }
+
+  /* ---------------- BROWSE / BUY ---------------- */
+  function matches(game){ if (!searchTerm) return true; return game.name.toLowerCase().includes(searchTerm.toLowerCase()); }
+  function initialsFor(name){ return name.slice(0, 2).toUpperCase(); }
+  function colorFor(name){ let h = 0; for (let i=0;i<name.length;i++) h = name.charCodeAt(i) + ((h<<5)-h); return FALLBACK_COLORS[Math.abs(h) % FALLBACK_COLORS.length]; }
+  function shortLabel(label){ return (label || '').replace('Primary', '').trim(); }
+
+  function buildGameIndex(list){
+    const map = {};
+    list.forEach(listing => {
+      const games = (listing.games || '').split(',').map(g => g.trim()).filter(Boolean);
+      games.forEach(g => {
+        const key = g.toLowerCase();
+        if (!map[key]){ map[key] = { name: g, slots: {} }; SLOT_ORDER.forEach(t => map[key].slots[t] = { avail: 0, total: 0, minPrice: null, label: '' }); }
+        (listing.slots || []).forEach(s => {
+          const bucket = map[key].slots[s.type];
+          if (!bucket) return;
+          bucket.total++; bucket.label = s.label;
+          if (s.status === 'available'){
+            bucket.avail++;
+            const p = parseFloat(s.price);
+            if (!isNaN(p) && (bucket.minPrice === null || p < bucket.minPrice)) bucket.minPrice = p;
+          }
+        });
+      });
+    });
+    return Object.values(map).sort((a,b) => a.name.localeCompare(b.name));
+  }
+
+  function renderCard(game){
+    const anyAvailable = SLOT_ORDER.some(t => game.slots[t].avail > 0);
+    const initials = initialsFor(game.name);
+    const color = colorFor(game.name);
+    return `<div class="card">
+      <div class="card-img-wrap">
+        <div class="card-img-fallback" style="background:${color}">${initials}</div>
+        <span class="stock-badge ${anyAvailable ? 'in' : 'out'}">${anyAvailable ? 'In Stock' : 'Sold Out'}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${escapeHtml(game.name)}</div>
+        ${SLOT_ORDER.filter(t => game.slots[t].total > 0).map(t => {
+          const b = game.slots[t];
+          const canBuy = session && b.avail > 0;
+          return `<div class="slot-row">
+            <span class="slot-mini ${b.avail > 0 ? 'avail' : 'sold'}">${escapeHtml(shortLabel(b.label))}${b.avail > 0 ? ' ×' + b.avail + ' · ' + b.minPrice : ''}</span>
+            ${b.avail > 0 ? `<button class="buy-btn" ${canBuy ? '' : 'disabled'} data-game="${escapeHtml(game.name)}" data-type="${t}" data-label="${escapeHtml(b.label)}" data-price="${b.minPrice}">${session ? 'Buy' : 'Log in to buy'}</button>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  function render(){
+    const root = $('#listRoot');
+    const games = buildGameIndex(listings);
+    const filtered = games.filter(matches);
+    if (games.length === 0){ root.innerHTML = `<div class="empty-state"><div class="big">Nothing listed yet</div><div>Check back shortly.</div></div>`; return; }
+    if (filtered.length === 0){ root.innerHTML = `<div class="empty-state"><div class="big">No matches</div><div>Try a different game name.</div></div>`; return; }
+    root.innerHTML = `<div class="grid">${filtered.map(renderCard).join('')}</div>`;
+    document.querySelectorAll('.buy-btn').forEach(btn => {
+      if (btn.disabled) return;
+      btn.addEventListener('click', () => buySlot(btn.dataset.game, btn.dataset.type, btn.dataset.label, btn.dataset.price));
+    });
+  }
+
+  async function buySlot(game, slotType, slotLabel, price){
+    if (!session) return;
+    if (!confirm(`Buy ${slotLabel} for "${game}" — ${price}? This will be deducted from your balance and your order goes to the seller to confirm.`)) return;
+    try {
+      const res = await apiPost('placeOrder', { resellerId: session.resellerId, token: session.token, game, slotType, slotLabel, price });
+      if (res.error){ showToast(res.error); return; }
+      session.balance = res.balance;
+      saveSession(session);
+      renderAuthBar();
+      showToast('Order placed — waiting for seller to confirm');
+      load();
+    } catch(e){ showToast('Could not place order — try again'); }
+  }
+
+  /* ---------------- ORDERS ---------------- */
+  async function loadMyOrders(){
+    if (!session) return;
+    const root = $('#ordersRoot');
+    root.innerHTML = `<div class="status-line">Loading your orders...</div>`;
+    try {
+      const orders = await apiGet('myOrders', { resellerId: session.resellerId, token: session.token });
+      if (orders.error){ root.innerHTML = `<div class="empty-state"><div class="big">Session expired</div><div>Please log in again.</div></div>`; return; }
+      renderOrders(orders);
+    } catch(e){
+      root.innerHTML = `<div class="empty-state"><div class="big">Could not load orders</div></div>`;
+    }
+  }
+
+  function renderOrders(orders){
+    const root = $('#ordersRoot');
+    if (!orders.length){ root.innerHTML = `<div class="empty-state"><div class="big">No orders yet</div><div>Buy something from the Browse tab.</div></div>`; return; }
+    orders.sort((a,b) => (b.date || '').localeCompare(a.date || ''));
+    root.innerHTML = `<div class="order-list">${orders.map(o => `
+      <div class="order-card">
+        <div class="order-top">
+          <div>
+            <div class="order-game">${escapeHtml(o.game)} — ${escapeHtml(o.slotLabel)}</div>
+            <div class="order-meta">${escapeHtml(o.date)} · Paid ${escapeHtml(String(o.price))}</div>
+          </div>
+          <span class="order-badge ${o.status}">${escapeHtml(o.status)}</span>
+        </div>
+        ${o.status === 'fulfilled' && o.fulfilledEmail ? `
+          <div class="cred-reveal">
+            <div class="row"><span class="lbl">Login</span><span>${escapeHtml(o.fulfilledEmail)} <button class="copy-mini" data-val="${escapeHtml(o.fulfilledEmail)}">copy</button></span></div>
+            <div class="row"><span class="lbl">Password</span><span>${escapeHtml(o.fulfilledPassword)} <button class="copy-mini" data-val="${escapeHtml(o.fulfilledPassword)}">copy</button></span></div>
+          </div>` : ''}
+        ${o.status === 'pending' ? `<div style="color:var(--text-faint); font-size:11.5px; margin-top:6px;">Waiting for the seller to assign your account</div>` : ''}
+      </div>`).join('')}</div>`;
+    document.querySelectorAll('.copy-mini').forEach(btn => btn.addEventListener('click', () => navigator.clipboard.writeText(btn.dataset.val).then(()=>showToast('Copied'))));
+  }
+
+  /* ---------------- MISC / BOOT ---------------- */
+  $('#avSearch') && $('#avSearch').addEventListener('input', (e) => { searchTerm = e.target.value; render(); });
+  $('#refreshBtn') && $('#refreshBtn').addEventListener('click', () => { $('#refreshBtn').classList.add('spinning'); load(); setTimeout(()=>$('#refreshBtn').classList.remove('spinning'), 600); });
+
+  async function load(){
+    $('#statusText').textContent = 'Refreshing...';
+    try {
+      const data = await apiGet('availability', {});
+      listings = Array.isArray(data) ? data : [];
+      $('#statusText').textContent = 'Updated ' + new Date().toLocaleTimeString();
+      render();
+    } catch(e){
+      $('#statusText').textContent = 'Could not refresh — check your connection';
+    }
+  }
+
+  async function refreshBalance(){
+    if (!session) return;
+    try {
+      const res = await apiGet('me', { resellerId: session.resellerId, token: session.token });
+      if (!res.error){ session.balance = res.balance; saveSession(session); renderAuthBar(); }
+    } catch(e){}
+  }
+
+  function renderAll(){
+    renderAuthBar();
+    renderAuthPanel();
+    wireTabs();
+    $('#browseView').style.display = activeTab === 'browse' ? 'block' : 'none';
+    $('#ordersView').style.display = activeTab === 'orders' ? 'block' : 'none';
+    render();
+  }
+
+  let pollTimer = null;
+  function boot(){
+    if (!getUrl()){
+      $('#connectWrap').style.display = 'block';
+      $('#mainWrap').style.display = 'none';
+      renderConnectBox();
+      return;
+    }
+    $('#connectWrap').style.display = 'none';
+    $('#mainWrap').style.display = 'block';
+    session = loadSession();
+    showingAuth = session ? null : 'login';
+    renderAll();
+    load();
+    if (session) refreshBalance();
+    clearInterval(pollTimer);
+    pollTimer = setInterval(() => { load(); if (session) refreshBalance(); }, 45000);
+  }
+
+  renderConnectBox();
+  boot();
+})();
+</script>
